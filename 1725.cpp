@@ -1,5 +1,4 @@
 //1725 히스토그램. 세그먼트 트리를 이용하여 구간의 최소 높이를 저장.
-//왜 안되냐 이거;; 2020.11.22 17:28
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -7,7 +6,7 @@ using namespace std;
 vector<int>tree1;//높이 저장
 vector<int>tree2;//인덱스 저장
 int n;
-long int base,ans;
+int base,ans;
 void rec(int start,int end);
 int srch(int l,int r);
 int main(){
@@ -38,8 +37,8 @@ int main(){
 void rec(int start,int end){
     int len=end-start+1;
     int index=srch(start,end);
-    int h=tree1[index];
-    if(start>end||index==0){
+    int h=tree1[base+index]; //틀렸던 부분...index 즉 srch의 반환형은 0~n-1사이 인덱스
+    if(start>end){
         return;
     }
     if(ans<len*h)
@@ -52,7 +51,6 @@ void rec(int start,int end){
     }
 }
 int srch(int l,int r){
-    int intl=l,intr=r;
     l+=base;
     r+=base;
     int res=l;
