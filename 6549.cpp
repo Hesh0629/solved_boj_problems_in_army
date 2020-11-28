@@ -6,15 +6,26 @@ using namespace std;
 vector<int>tree1;//높이 저장
 vector<int>tree2;//인덱스 저장
 int n;
-int base,ans;
+int base;
+long long ans;
+void func1(int n);
 void rec(int start,int end);
 int srch(int l,int r);
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
+    while(1){
+        cin>>n;
+        if(n!=0)
+            func1(n);
+        else
+            break;
+    } 
+    return 0;
+}
+void func1(int n){
     ans=-1;
-    cin>>n;
     for(base=1;base<n;base*=2);
     tree1.clear();
     tree1.assign(2*base+1,1000000001);
@@ -32,12 +43,12 @@ int main(){
             tree2[i]=tree2[2*i+1];
     }
     rec(0,n-1);
-    cout<<ans;
+    cout<<ans<<'\n';
 }
 void rec(int start,int end){
-    int len=end-start+1;
+    long long len=end-start+1;
     int index=srch(start,end);
-    int h=tree1[base+index];
+    long long h=tree1[base+index]; //틀렸던 부분...index 즉 srch의 반환형은 0~n-1사이 인덱스
     if(start>end){
         return;
     }
