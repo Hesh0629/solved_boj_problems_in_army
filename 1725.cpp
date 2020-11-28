@@ -11,29 +11,32 @@ long int base,ans;
 void rec(int start,int end);
 int srch(int l,int r);
 int main(){
+    n=1;
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-    ans=-1;
-    cin>>n;
-    for(base=1;base<n;base*=2);
-    tree1.clear();
-    tree1.assign(2*base+1,1000000001);
-    tree2.clear();
-    tree2.assign(2*base+1,1000000001);
-    for(int i=0;i<n;i++){
-        cin>>tree1[base+i];
-        tree2[base+i]=i;
+    while(n){
+        ans=-1;
+        cin>>n;
+        for(base=1;base<n;base*=2);
+        tree1.clear();
+        tree1.assign(2*base+1,1000000001);
+        tree2.clear();
+        tree2.assign(2*base+1,1000000001);
+        for(int i=0;i<n;i++){
+            cin>>tree1[base+i];
+            tree2[base+i]=i;
+        }
+        for(int i=base-1;i>0;i--){
+            tree1[i]=min(tree1[2*i],tree1[2*i+1]);
+            if(tree1[i]==tree1[2*i])
+                tree2[i]=tree2[2*i];
+            else
+                tree2[i]=tree2[2*i+1];
+        }
+        rec(0,n-1);
+        cout<<ans;
     }
-    for(int i=base-1;i>0;i--){
-        tree1[i]=min(tree1[2*i],tree1[2*i+1]);
-        if(tree1[i]==tree1[2*i])
-            tree2[i]=tree2[2*i];
-        else
-            tree2[i]=tree2[2*i+1];
-    }
-    rec(0,n-1);
-    cout<<ans;
 }
 void rec(int start,int end){
     int len=end-start+1;
