@@ -1,4 +1,4 @@
-//10999 구간 합 구하기2 (2020.11.28 D+82, 이병때 푼 마지막 문제)
+//10999 구간 합 구하기2 (2020.11.29 D+83, 이병때 푼 마지막 문제)
 //예전 방식대로 하면 TLE, Lazy Propagation 이용해야하는 문제
 #include<iostream>
 #include<vector>
@@ -19,6 +19,7 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
     cin>>n>>m>>k;
+    //--------------tree생성 부분--------------
     for(base=1;base<n;base*=2);
     segtree.resize(2*base+1);
     for(int i=0;i<n;i++){
@@ -52,6 +53,7 @@ int main(){
             segtree[i].blank=0;
         }
     }
+    //-------------------------------------------
     for(int i=0;i<m+k;i++){
         int a,b,c,d;
         cin>>a;
@@ -107,7 +109,7 @@ long long res(int l,int r){ //구간 합을 구하는 함수
     }
     return ans;
 }
-void srch(int l,int r,int index){//구간합을 내기위해 탑 다운으로 가다가 laz를 만나면 propagate하며 업데이트 해주는 함수
+void srch(int l,int r,int index){//구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
     if(segtree[index].lazy!=0){
         propagate(index);
     }
