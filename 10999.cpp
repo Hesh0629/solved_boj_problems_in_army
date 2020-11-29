@@ -12,8 +12,7 @@ typedef struct {
 vector<str>segtree;
 void add(int l,int r,int d,int index);
 void srch(int l,int r,int index);
-void propagate(int index);
-long long res(int l,int r);
+long long res(int l,int r,int index);
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
@@ -63,7 +62,7 @@ int main(){
         }
         else{
             cin>>b>>c;
-            cout<<res(b-1,c-1)<<'\n';
+            cout<<res(b-1,c-1,1)<<'\n';
             
         }
     }
@@ -73,7 +72,7 @@ void add(int l,int r,int d,int index){ //들어온 lazy를 노드 정보에 더�
     if(segtree[index].len==1){
         segtree[index].value+=d;
     }
-    else if(segtree[index].x==l&&segtree[index].y==r)
+    else if(segtree[index].x>=l&&segtree[index].y<=r)
         segtree[index].lazy+=d;
     else{
         int half=segtree[index*2].x+segtree[index*2].len-1;
@@ -87,57 +86,40 @@ void add(int l,int r,int d,int index){ //들어온 lazy를 노드 정보에 더�
         }
     }
 }
-long long res(int l,int r){ //구간 합을 구하는 함수
+long long res(int l,int r,int index){ //구간 합을 구하는 함수
     srch(l,r,1);
-    long long ans=0;
-    l+=base;
-    r+=base;
-    while(l<=r){
-        if(l%2==1)
-            ans+=segtree[l++].value;
-        if(r%2==0)
-            ans+=segtree[r--].value;
-        l/=2;
-        r/=2;
-        if(l==r){
-            ans+=segtree[l].value;
-            break;
-        }
+    if(segtree[index].x>=l&&segtree[index].y<=r)
+        return segtree[index].value;
+    else{
+        int half=segtree[index*2].x+segtree[index*2].len-1;
+        if(r<=half)
+            return res(l,r,2*index);
+        else if(l>=half+1)
+            return res(l,r,2*index+1);
         else{
-            continue;
+            return res(l,half,2*index)+res(half+1,r,2*index+1);
         }
     }
-    return ans;
 }
 void srch(int l,int r,int index){//구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
     if(segtree[index].lazy!=0){
-        propagate(index);
-    }
-    else{
+        segtree[index].value+=segtree[index].lazy*segtree[index].len;
         if(segtree[index].len!=1){
-            int half=segtree[index*2].x+segtree[index*2].len-1;
-            if(r<=half)
-                srch(l,r,2*index);
-            else if(l>=half+1)
-                 srch(l,r,2*index+1);
-            else{
-                srch(l,half,2*index);
-                srch(half+1,r,2*index+1);
-            }
-            segtree[index].value=segtree[index*2].value+segtree[index*2+1].value;
-        }    
+            segtree[index*2].lazy=segtree[index].lazy;
+            segtree[index*2+1].lazy=segtree[index].lazy;
+        }
+        segtree[index].lazy=0;
     }
-}
-void propagate(int index){
-    segtree[index].value+=segtree[index].lazy*segtree[index].len;
     if(segtree[index].len!=1){
-        segtree[index*2].lazy=segtree[index].lazy;
-        segtree[index*2+1].lazy=segtree[index].lazy;
-        segtree[index].lazy=0;
-        propagate(index*2);
-        propagate(index*2+1);
-    }
-    else{
-        segtree[index].lazy=0;
-    }
+        int half=segtree[index*2].x+segtree[index*2].len-1;
+        if(r<=half)
+            srch(l,r,2*index);
+        else if(l>=half+1)
+            srch(l,r,2*index+1);
+        else{
+            srch(l,half,2*index);
+            srch(half+1,r,2*index+1);
+        }
+        segtree[index].value=segtree[index*2].value+segtree[index*2+1].value;
+    }    
 }
