@@ -1,5 +1,6 @@
 //10999 구간 합 구하기2 (2020.11.29 D+83, 이병때 푼 마지막 문제)
-//예전 방식대로 하면 TLE, Lazy Propagation 이용해야하는 문제
+//2020.12.5 D+89 일병 달고도 못푸는중. 사실 식당청소가 복병이였다. 세제냄시 퐁퐁
+//예전 방식대로 하면 TLE, Lazy Propagation 이용해야하는 문제. 아니근데 왜 틀린ㄱᆢ
 #include<iostream>
 #include<vector>
 #include<algorithm>
