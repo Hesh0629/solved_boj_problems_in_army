@@ -3,16 +3,17 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#define MAX 1000010
+long long arr[MAX];
 using namespace std;
 int n,m,k,base;
 typedef struct {
     long long value,lazy;
-    int x,y,len,blank=1;
 }str;
 vector<str>segtree;
-void add(int l,int r,int d,int index);
-void srch(int l,int r,int index);
-long long res(int l,int r,int index);
+void update(int l,int r,int nl,int nr,long long diff,int index); //들어온 lazy를 노드 정보에 더해주는 함수
+long long res(int l,int r,int nl,int nr, int index);  //구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
+long long init(int nl, int nr,int index);
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
@@ -22,104 +23,68 @@ int main(){
     for(base=1;base<n;base*=2);
     segtree.resize(2*base+1);
     for(int i=0;i<n;i++){
-        cin>>segtree[base+i].value;
-        segtree[base+i].x=i;
-        segtree[base+i].y=i;
-        segtree[base+i].len=1;
-        segtree[base+i].blank=0;
+        cin>>arr[i];
     }
-    for(int i=base-1;i>=0;i--){
-        segtree[i].value=segtree[2*i].value+segtree[2*i+1].value;
-        if(segtree[2*i].blank==1&&segtree[2*i+1].blank==1){
-            segtree[i].blank=1;
-        }
-        else if(segtree[2*i].blank==1){
-            segtree[i].x=segtree[2*i+1].x;
-            segtree[i].y=segtree[2*i+1].y;
-            segtree[i].len=segtree[2*i+1].len;
-            segtree[i].blank=0;
-        }
-        else if(segtree[2*i+1].blank==1){
-            segtree[i].x=segtree[2*i].x;
-            segtree[i].y=segtree[2*i].y;
-            segtree[i].len=segtree[2*i].len;
-            segtree[i].blank=0;
-        }    
-        else{
-            segtree[i].x=segtree[2*i].x;
-            segtree[i].y=segtree[2*i+1].y;
-            segtree[i].len=segtree[2*i].len+segtree[2*i+1].len;
-            segtree[i].blank=0;
-        }
-    }
+    init(0,n-1,1);
     //-------------------------------------------
     for(int i=0;i<m+k;i++){
-        int a,b,c,d;
+        long long a,b,c,d;
         cin>>a;
         if(a==1){
             cin>>b>>c>>d;
-            add(b-1,c-1,d,1);
+            update(b,c,1,n,d,1);
         }
         else{
             cin>>b>>c;
-            cout<<res(b-1,c-1,1)<<'\n';
-            
+            cout<<res(b,c,1,n,1)<<'\n'; 
         }
     }
     return 0;
 }
-void add(int l,int r,int d,int index){ //들어온 lazy를 노드 정보에 더해주는 함수
-    if(segtree[index].len==1){
-        segtree[index].value+=d;
+
+long long init(int nl, int nr,int index){
+    if(nl==nr){
+        return segtree[index].value=arr[nl];
     }
-    else if(segtree[index].x>=l&&segtree[index].y<=r)
-        segtree[index].lazy+=d;
     else{
-        int half=segtree[index*2].x+segtree[index*2].len-1;
-        if(r<=half)
-            add(l,r,d,2*index);
-        else if(l>=half+1)
-            add(l,r,d,2*index+1);
-        else{
-            add(l,half,d,2*index);
-            add(half+1,r,d,2*index+1);
-        }
+        int half=(nl+nr)/2;
+        return segtree[index].value=init(nl,half,index*2)+init(half+1,nr,index*2+1);
     }
 }
-long long res(int l,int r,int index){ //구간 합을 구하는 함수
-    srch(l,r,1);
-    if(segtree[index].x>=l&&segtree[index].y<=r)
-        return segtree[index].value;
-    else{
-        int half=segtree[index*2].x+segtree[index*2].len-1;
-        if(r<=half)
-            return res(l,r,2*index);
-        else if(l>=half+1)
-            return res(l,r,2*index+1);
-        else{
-            return res(l,half,2*index)+res(half+1,r,2*index+1);
-        }
-    }
-}
-void srch(int l,int r,int index){//구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
+
+void update(int l,int r,int nl,int nr,long long diff,int index){ //들어온 lazy를 노드 정보에 더해주는 함수
     if(segtree[index].lazy!=0){
-        segtree[index].value+=segtree[index].lazy*segtree[index].len;
-        if(segtree[index].len!=1){
-            segtree[index*2].lazy=segtree[index].lazy;
-            segtree[index*2+1].lazy=segtree[index].lazy;
+        segtree[index].value+=segtree[index].lazy*(nr-nl+1);
+        if(nr!=nl){
+            segtree[index*2].lazy+=segtree[index].lazy;
+            segtree[index*2+1].lazy+=segtree[index].lazy;
+        }
+        segtree[index].lazy=0;
+    } 
+    if(nl>r||nr<l) return;
+    else if(nl>=l&&nr<=r){
+        if(nl==nr) segtree[index].value+=diff;
+        else segtree[index].lazy+=diff;
+    }
+    else{
+        int half=(nl+nr)/2;
+        update(l,r,nl,half,diff,2*index);
+        update(l,r,half+1,nr,diff,2*index+1);
+        segtree[index].value=segtree[index*2].value+segtree[index*2+1].value;
+    }
+}
+
+long long res(int l,int r,int nl,int nr, int index){ //구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
+    long long len=nr-nl+1;
+    if(segtree[index].lazy!=0){
+        segtree[index].value+=(segtree[index].lazy)*(len);
+        if(len!=1){
+            segtree[index*2].lazy+=segtree[index].lazy;
+            segtree[index*2+1].lazy+=segtree[index].lazy;
         }
         segtree[index].lazy=0;
     }
-    if(segtree[index].len!=1){
-        int half=segtree[index*2].x+segtree[index*2].len-1;
-        if(r<=half)
-            srch(l,r,2*index);
-        else if(l>=half+1)
-            srch(l,r,2*index+1);
-        else{
-            srch(l,half,2*index);
-            srch(half+1,r,2*index+1);
-        }
-        segtree[index].value=segtree[index*2].value+segtree[index*2+1].value;
-    }    
+    if(nl>r||nr<l) return 0; 
+    if(nl>=l&&nr<=r) return segtree[index].value;
+    return res(l,r,nl,(nl+nr)/2,2*index) + res(l,r,(nl+nr)/2+1,nr,2*index+1);
 }
