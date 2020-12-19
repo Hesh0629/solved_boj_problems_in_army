@@ -1,6 +1,5 @@
 //10999 구간 합 구하기2 (2020.11.29 D+83, 이병때 푼 마지막 문제)
-//2020.12.5 D+89 일병 달고도 못푸는중. 사실 식당청소가 복병이였다. 세제냄시 퐁퐁
-//예전 방식대로 하면 TLE, Lazy Propagation 이용해야하는 문제. 아니근데 왜 틀린ㄱᆢ
+//예전 방식대로 하면 TLE, Lazy Propagation 이용해야하는 문제
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -14,7 +13,15 @@ typedef struct {
 vector<str>segtree;
 void update(int l,int r,int nl,int nr,long long diff,int index); //들어온 lazy를 노드 정보에 더해주는 함수
 long long res(int l,int r,int nl,int nr, int index);  //구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
-long long init(int nl, int nr,int index);
+long long init(int nl, int nr,int index){
+    if(nl==nr){
+        return segtree[index].value=arr[nl];
+    }
+    else{
+        int half=(nl+nr)/2;
+        return segtree[index].value=init(nl,half,index*2)+init(half+1,nr,index*2+1);
+    }
+}
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
@@ -33,27 +40,16 @@ int main(){
         cin>>a;
         if(a==1){
             cin>>b>>c>>d;
-            update(b,c,1,n,d,1);
+            update(b-1,c-1,0,n-1,d,1);
         }
         else{
             cin>>b>>c;
-            cout<<res(b,c,1,n,1)<<'\n'; 
+            cout<<res(b-1,c-1,0,n-1,1)<<'\n'; 
         }
     }
     return 0;
 }
-
-long long init(int nl, int nr,int index){
-    if(nl==nr){
-        return segtree[index].value=arr[nl];
-    }
-    else{
-        int half=(nl+nr)/2;
-        return segtree[index].value=init(nl,half,index*2)+init(half+1,nr,index*2+1);
-    }
-}
-
-void update(int l,int r,int nl,int nr,long long diff,int index){ //들어온 lazy를 노드 정보에 더해주는 함수
+void update(int l,int r,int nl,int nr,long long diff,int index){ //들어온 lazy를 노드 정보에 더해주는 함수, *틀린부분(2주 끈 부분) = lazy check해주고 자식도 업뎃해줘야 적용가능*
     if(segtree[index].lazy!=0){
         segtree[index].value+=segtree[index].lazy*(nr-nl+1);
         if(nr!=nl){
@@ -64,8 +60,11 @@ void update(int l,int r,int nl,int nr,long long diff,int index){ //들어온 laz
     } 
     if(nl>r||nr<l) return;
     else if(nl>=l&&nr<=r){
-        if(nl==nr) segtree[index].value+=diff;
-        else segtree[index].lazy+=diff;
+        segtree[index].value+=diff*(nr-nl+1);
+        if(nr!=nl){
+          segtree[index*2].lazy+=diff;
+          segtree[index*2+1].lazy+=diff;
+        }
     }
     else{
         int half=(nl+nr)/2;
@@ -74,7 +73,6 @@ void update(int l,int r,int nl,int nr,long long diff,int index){ //들어온 laz
         segtree[index].value=segtree[index*2].value+segtree[index*2+1].value;
     }
 }
-
 long long res(int l,int r,int nl,int nr, int index){ //구간합을 내기위해 탑 다운으로 가다가 lazy를 만나면 propagate하며 업데이트 해주는 함수
     long long len=nr-nl+1;
     if(segtree[index].lazy!=0){
@@ -88,4 +86,5 @@ long long res(int l,int r,int nl,int nr, int index){ //구간합을 내기위해
     if(nl>r||nr<l) return 0; 
     if(nl>=l&&nr<=r) return segtree[index].value;
     return res(l,r,nl,(nl+nr)/2,2*index) + res(l,r,(nl+nr)/2+1,nr,2*index+1);
+   
 }
