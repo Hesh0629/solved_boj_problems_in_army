@@ -12,8 +12,7 @@
 using namespace std;
 vector<int>adj[20002];
 vector<int>adj2[20002];
-vector<int>vis(20002,0);
-vector<int>vis2(20002,0); // 1~10000: 양수, 10001~20000: 음수
+vector<int>vis(20002,0);  // 1~10000: 양수, 10001~20000: 음수
 vector<int>dfs_order; //dfs가 끝나는 순서를 저장
 vector<int>same_comp(20002,-1); //comp 넘버를 저장하는 벡터
 vector<int>ans(20002,-1); //bool 진리값 저장
