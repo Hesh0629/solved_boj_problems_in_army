@@ -19,9 +19,6 @@ int main() {
 	  	input.push_back({init,i});
   	}
   	stable_sort(input.begin(),input.end(),greater<pair<long long int,long long int>>());
-  	for(int i=0;i<n-1;i++){
-		if(input[i].first==input[i+1].first) input[i+1].second=input[i].second;
-	}
 	long long int ans=0;
   	for(int i=0;i<n;i++){
 		long long int l=base,r=base+input[i].second-1;
