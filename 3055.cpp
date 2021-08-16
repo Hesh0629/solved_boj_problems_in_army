@@ -1,4 +1,4 @@
-//queue 관리를 잘하자! 제발 쓴 큐는 
+//queue 관리를 잘하자! 그리고 논리식 틀리지 말기
 #include <iostream>
 #include <algorithm>
 #include <queue>
