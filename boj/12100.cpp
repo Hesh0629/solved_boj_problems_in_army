@@ -1,3 +1,5 @@
+//check 하나 틀린거가지고 4시간을 태운 문제
+//사실상 구현 문제에 더 가까웠다.
 #include <bits/stdc++.h>
 using namespace std;
 int n,init[22][22][6],ans,check[22][22][6];
