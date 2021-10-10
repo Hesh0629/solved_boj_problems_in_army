@@ -1,4 +1,4 @@
-<img src="./boj-og-1200.png" width="900" height="430"></img>
+<img src="./boj-og-1200.png" width="90%"></img>
 # **Solved boj problems (in ROKA)**
 군대 개인정비 시간에 푼 백준문제들입니다.<br>
 - 참고 서적 : 알고리즘 트레이닝 | Guide to Competitive Programming - 안티 라크소넨
