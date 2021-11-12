@@ -19,10 +19,10 @@ int main(){
       long long int gap=v[j]-v[i];
       long long int cnt=2;
       long long int cur=v[j]+gap, temp=v[i]+v[j];
-      auto asdf=lower_bound(v.begin(),v.end(),v[i]-gap);
+      auto asdf=lower_bound(v.begin(),v.begin()+i,v[i]-gap);
       if(*asdf==v[i]-gap) continue;
       while(1){
-        auto iter=lower_bound(v.begin(),v.end(),cur);
+        auto iter=lower_bound(v.begin()+j,v.end(),cur);
         if(iter!=v.end()&&*iter==cur){
           cnt++;
           temp+=cur;
