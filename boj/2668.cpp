@@ -11,7 +11,7 @@ void dfs(int cur){
     if(fin[cur]) return;
     else{
       // 하지만 해당 방문한 적이 있지만 DFS를 다 안돌았다면 onCase라는 것이다.
-      // 해당 정점부터 정답벡터에 넣어주고 자기 자신이 나올 때 까지 사이클에 있는 값들을 넣어준다.
+      // 해당 정점부터 정답벡터에 넣어주고 현재 정점이 나올 때 까지 정점들을 넣어준다.
       ans.push_back(cur);
       int i=par[cur];
       while(i!=cur){
