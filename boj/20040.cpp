@@ -1,5 +1,4 @@
 // 사이클이 발생한다 == 같은 유니언끼리 묶으려고 시도했다.
-// union-find 문제
 #include<bits/stdc++.h>
 #define endl '\n'
 using namespace std;
@@ -28,7 +27,8 @@ int main(){
       return 0;
     }
     else{
-      if(sz[par_a]>sz[par_b]){
+      // 크기가 더 큰 집합밑에 작은 집합을 넣어준다. 
+      if(sz[par_a]<sz[par_b]){
         sz[par_b]+=sz[par_a];
       }
       else{
