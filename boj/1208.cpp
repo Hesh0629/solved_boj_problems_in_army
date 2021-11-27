@@ -1,36 +1,41 @@
-//투 포인터 구현은 금방했지만 이상하게 계속 틀렸던 문제. 출력양식이 문제는 아니었을텐데 뭔가 이상했다.
-#include <iostream>
-#include <algorithm>
-#include <vector>
+#include<bits/stdc++.h>
 using namespace std;
+unordered_map<int,int>vis;
+long long int half,n,s,ans;
+vector<int>v;
+void left(int idx,int val){
+	if(idx==half){
+		vis[val]++;
+	}
+	else{	
+		left(idx+1,val);
+		left(idx+1,val+v[idx]);
+	}
+}
+void right(int idx,int val){
+	if(idx==n){
+		ans+=vis[s-val];
+	}
+	else{
+		right(idx+1,val);
+		right(idx+1,val+v[idx]);
+	}
+}
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  int n,s;
+  cout.tie(0);
+  ans=0;
   cin>>n>>s;
-  vector<int>arr(n);
   for(int i=0;i<n;i++){
-	  cin>>arr[i];
+	  int x;
+	  cin>>x;
+	  v.push_back(x);
   }
-  int l=0,r=0;
-  int cur_sum=arr[0];
-  int ans=2147483646;
-  while(l<=r&&r<n){
-	  if(cur_sum==s){
-		  ans=min(ans,r-l+1);
-		  cur_sum+=arr[++r];
-	  }
-	  else if(cur_sum>s){
-		  ans=min(ans,r-l+1);
-		  cur_sum-=arr[l++]; //실수
-	  }
-	  else if(cur_sum<s){
-		  cur_sum+=arr[++r];
-	  }
-  }
-  if(ans==2147483646)
-	cout<<0<<endl;
-  else
-	cout<<ans<<endl;
+  half=n/2;
+  left(0,0);
+  right(half,0);
+  if(!s)ans--;
+  cout<<ans<<endl;
   return 0;
 }
