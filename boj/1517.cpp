@@ -1,3 +1,5 @@
+// 배열을 정렬한 후에 기존 정렬에서 자신보다 오른쪽에 자신보다 작은 수가 몇개 있는지를 CNT
+// 완료된 숫자에는 +1을 해서 뒤에 검사할 자신보다 큰 숫자가 자신을 cnt할 수 있도록 한다.
 #include <iostream>
 #include <algorithm>
 #include <vector>
